@@ -1,3 +1,5 @@
+using Oxide.Core;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Oxide.Plugins
@@ -12,10 +14,51 @@ namespace Oxide.Plugins
         //SkinAndSpay skinid "new name" =   Reskin and change name of item.
         //Permission to use command
         public const string permUse = "SkinAndSpay.use";
+        public const string permSkin = "SkinAndSpay.skin";
+        public bool HookFallBack = false;
+        List<ulong> Delay = new List<ulong>();
         private void Init()
         {
             //register permission with server
             permission.RegisterPermission(permUse, this);
+            permission.RegisterPermission(permSkin, this);
+            if (OxideMod.Version.ToString() == "2.0.4012")
+            {
+                Puts("Setting Hook Fall Back Mode");
+                HookFallBack = true;
+            }
+        }
+
+        void OnPlayerInput(BasePlayer player, InputState input)
+        {
+            //Falls back for oxide version with out hook.
+            if(HookFallBack)
+            {
+                //Checks Player has permission to reduce server load on heavy hook.
+                if(player.IPlayer.HasPermission(permUse))
+                {
+                    //Checks they have spray can and adds a delay cool down from function firing
+                    if(player.GetHeldEntity() is SprayCan && input.WasJustReleased(BUTTON.FIRE_PRIMARY) && !Delay.Contains(player.userID))
+                    {
+                        Delay.Add(player.userID);
+                        timer.Once(3, () => { Delay.Remove(player.userID); });
+                        timer.Once(1f, () =>
+                        {
+                            //Scans where player is looking to find decal
+                            RaycastHit hit;
+                            if (!Physics.Raycast(player.eyes.HeadRay(), out hit)){return;}
+                            var entity = hit.GetEntity();
+                            if (entity != null && entity.prefabID == 3884356627)
+                            {
+                                //Found decal so apply skin from held spray can
+                                entity.skinID = player.GetHeldEntity().skinID;
+                                entity.SendNetworkUpdateImmediate();
+                                return;
+                            }
+                        });
+                    }
+                }
+            }
         }
 
         private object OnSprayCreate(SprayCan sc, Vector3 vector, Quaternion quaternion)
@@ -144,7 +187,7 @@ namespace Oxide.Plugins
             //Load default skin 0
             ulong skin = 0;
             //Check permission and reject users without it.
-            if (!player.IPlayer.HasPermission(permUse))
+            if (!player.IPlayer.HasPermission(permSkin))
             {
                 player.ChatMessage("Permission required");
                 return;
