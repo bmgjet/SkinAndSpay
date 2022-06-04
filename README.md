@@ -11,10 +11,16 @@ Skin Handling And Custom Spray Decals.
         SkinAndSpay.use    (To Chance Spray Skins)<br>
        SkinAndSpay.skin   (To Use the Chat Command To Skin Items)<br><br>
         
-# SkinAndSpay
+# SkinAndSpay Creating Skins
         Demo Video: https://www.youtube.com/watch?v=ti-cUEtf_u4
 <br>SprayCan Skins Only Work If They Are Tagged As "Spray Can Decal".<br>
 The built in workshop editor in rust doesnt allow this so youll need to create the skins by hand.<br>
 Then use https://github.com/nihilocrat/SteamWorkshopUploader to upload it.<br><br>
 <a href="https://github.com/bmgjet/SkinAndSpay/raw/main/SteamWorkshopUploader.zip" target="_blank">SteamWorkshopUploader.zip</a> is included in this repo and is preset up with 1 skin to use as a template.<br>
 Watch the video to see how to use it.<br><br><br>
+
+# Using Skins Plugin As GUI
+You can use another plugih such as Skins to work as a GUI for allowing players to switch between skins.<br>
+Here is a example you can add to oxide/config/Skins.json<br>
+<p style="padding-left: 80px;">{<br />"Item Shortname": "spraycan",<br />"Skins": [<br />2816639887,<br />2816652031,<br />2816648654,<br />2816580876,<br />2816218649,<br />2816218582,<br />2816218516,<br />2816218452,<br />2816676408,<br />2816675297,<br />2816673852,<br />2816773393,<br />2816763883,<br />2816766036,<br />2816768996<br />]<br />},</p>
+
