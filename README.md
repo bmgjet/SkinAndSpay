@@ -17,5 +17,3 @@ The built in workshop editor in rust doesnt allow this so youll need to create t
 Then use https://github.com/nihilocrat/SteamWorkshopUploader to upload it.<br><br>
 <a href="https://github.com/bmgjet/SkinAndSpay/raw/main/SteamWorkshopUploader.zip" target="_blank">SteamWorkshopUploader.zip</a> is included in this repo and is preset up with 1 skin to use as a template.<br>
 Watch the video to see how to use it.<br><br><br>
-NOTE: Oxide v2.0.5532 Doesnt have the hook added yet and youll have to use the <a href="https://github.com/bmgjet/SkinAndSpay/raw/main/Assembly-CSharp.zip" target="_blank">prepatched Assembly-CSharp.dll</a><br>
-Until the next update.
