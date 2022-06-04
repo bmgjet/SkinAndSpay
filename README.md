@@ -8,7 +8,8 @@ Skin Handling And Custom Spray Decals.
         /SkinAndSpay skinid "new name" =   Reskin and change name of item.<br>
         <br>
 //Permission to use command<br>
-        SkinAndSpay.use<br>
+        SkinAndSpay.use    (To Chance Spray Skins)<br>
+       "SkinAndSpay.skin   (To Use the Chat Command To Skin Items)<br><br>
         
 # SkinAndSpay
         Demo Video: https://www.youtube.com/watch?v=ti-cUEtf_u4
