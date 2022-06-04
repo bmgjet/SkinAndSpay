@@ -1,5 +1,7 @@
 # SkinAndSpay
-Skin Handling And Custom Spray Decals.
+Skin Handling And Custom Spray Decals.<br><br>
+Note: Plugin Wil fallback to mode where it skins the decal 2 seconds after the spray on oxide versions that are missing OnSprayCreate Hook<br>
+Make sure you dont move for the 3 seconds it takes when using oxide version 2.0.5532.0.<br><br>
 
 //Chat commands
 <br>
