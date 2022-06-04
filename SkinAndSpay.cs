@@ -1,4 +1,3 @@
-using Oxide.Core;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,23 +21,28 @@ namespace Oxide.Plugins
             //register permission with server
             permission.RegisterPermission(permUse, this);
             permission.RegisterPermission(permSkin, this);
-            if (OxideMod.Version.ToString() == "2.0.4012")
+            string Version = typeof(Oxide.Game.Rust.RustExtension).Assembly.GetName().Version.ToString();
+            if (Version == "2.0.5532.0")
             {
                 Puts("Setting Hook Fall Back Mode");
                 HookFallBack = true;
+            }
+            else
+            {
+                Puts("Detected Version " + Version);
             }
         }
 
         void OnPlayerInput(BasePlayer player, InputState input)
         {
             //Falls back for oxide version with out hook.
-            if(HookFallBack)
+            if (HookFallBack)
             {
                 //Checks Player has permission to reduce server load on heavy hook.
-                if(player.IPlayer.HasPermission(permUse))
+                if (player.IPlayer.HasPermission(permUse))
                 {
                     //Checks they have spray can and adds a delay cool down from function firing
-                    if(player.GetHeldEntity() is SprayCan && input.WasJustReleased(BUTTON.FIRE_PRIMARY) && !Delay.Contains(player.userID))
+                    if (player.GetHeldEntity() is SprayCan && input.WasJustReleased(BUTTON.FIRE_PRIMARY) && !Delay.Contains(player.userID))
                     {
                         Delay.Add(player.userID);
                         timer.Once(3, () => { Delay.Remove(player.userID); });
@@ -46,7 +50,7 @@ namespace Oxide.Plugins
                         {
                             //Scans where player is looking to find decal
                             RaycastHit hit;
-                            if (!Physics.Raycast(player.eyes.HeadRay(), out hit)){return;}
+                            if (!Physics.Raycast(player.eyes.HeadRay(), out hit)) { return; }
                             var entity = hit.GetEntity();
                             if (entity != null && entity.prefabID == 3884356627)
                             {
@@ -64,14 +68,14 @@ namespace Oxide.Plugins
         private object OnSprayCreate(SprayCan sc, Vector3 vector, Quaternion quaternion)
         {
             //Checks if modded spray can
-            if(sc.skinID != 0)
-            { 
+            if (sc.skinID != 0)
+            {
                 //Uses modded skin ID
-                        BaseEntity baseEntity2 = GameManager.server.CreateEntity(sc.SprayDecalEntityRef.resourcePath, vector, quaternion, true);
-                        baseEntity2.skinID = sc.skinID;
-                        baseEntity2.OnDeployed(null, sc.GetOwnerPlayer(), sc.GetItem());
-                        baseEntity2.Spawn();
-                        sc.GetItem().LoseCondition(sc.ConditionLossPerSpray);
+                BaseEntity baseEntity2 = GameManager.server.CreateEntity(sc.SprayDecalEntityRef.resourcePath, vector, quaternion, true);
+                baseEntity2.skinID = sc.skinID;
+                baseEntity2.OnDeployed(null, sc.GetOwnerPlayer(), sc.GetItem());
+                baseEntity2.Spawn();
+                sc.GetItem().LoseCondition(sc.ConditionLossPerSpray);
                 //Blocks normal spray
                 return false;
             }
