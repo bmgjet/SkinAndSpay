@@ -6,12 +6,15 @@ Make sure you dont move for the 3 seconds it takes when using oxide version 2.0.
 //Chat commands
 <br>
         /Spray skinid                  =   Sets spraycan to use custom skinid or returns to default if already set.<br>
+        /sprayresize size              =   Resizes the spray being looked at.<br>
+        /spraysize size                =   Custom sprays will come out at this size.<br>
         /SkinAndSpay skinid            =   Just reskin with provided skinid.<br>
         /SkinAndSpay skinid "new name" =   Reskin and change name of item.<br>
         <br>
 //Permission to use command<br>
         SkinAndSpay.use    (To Chance Spray Skins)<br>
-       SkinAndSpay.skin   (To Use the Chat Command To Skin Items)<br><br>
+        SkinAndSpay.skin   (To Use the Chat Command To Skin Items)<br>
+        SkinAndSpay.size   (To Use the Resize Commands)<br><br>
         
 # SkinAndSpay Creating Skins
         Demo Video: https://www.youtube.com/watch?v=ti-cUEtf_u4
