@@ -17,12 +17,10 @@ Make sure you dont move for the 3 seconds it takes when using oxide version 2.0.
         SkinAndSpay.size   (To Use the Resize Commands)<br><br>
         
 # SkinAndSpay Creating Skins
-        Demo Video: https://www.youtube.com/watch?v=ti-cUEtf_u4
+        Demo Video: https://www.youtube.com/watch?v=4gfnMVj_JnI
 <br>SprayCan Skins Only Work If They Are Tagged As "Spray Can Decal".<br>
-The built in workshop editor in rust doesnt allow this so youll need to create the skins by hand.<br>
-Then use https://github.com/nihilocrat/SteamWorkshopUploader to upload it.<br><br>
-<a href="https://github.com/bmgjet/SkinAndSpay/raw/main/SteamWorkshopUploader.zip" target="_blank">SteamWorkshopUploader.zip</a> is included in this repo and is preset up with 1 skin to use as a template.<br>
-Watch the video to see how to use it.<br>https://www.youtube.com/watch?v=1DV7BDwbJAw<br><br>
+The built in workshop editor in rust doesnt allow this so youll need to create the skins with my tool.<br>
+https://github.com/bmgjet/Spray-Decal-Creator
 
 # Using Skins Plugin As GUI
 You can use another plugih such as Skins to work as a GUI for allowing players to switch between skins.<br>
