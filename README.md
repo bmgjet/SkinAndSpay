@@ -1,3 +1,6 @@
+Just to iterate, None of my plugins or parts of there code are to be used in other paid services/plugins.<br>
+Please report it if you come across any that are in breach of this.<br><br>
+
 # SkinAndSpay
 Skin Handling And Custom Spray Decals.<br><br>
 Note: Plugin Wil fallback to mode where it skins the decal 2 seconds after the spray on oxide versions that are missing OnSprayCreate Hook<br>
