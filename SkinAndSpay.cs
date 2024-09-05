@@ -1,86 +1,50 @@
-using Oxide.Core;
+/*▄▄▄▄    ███▄ ▄███▓  ▄████  ▄▄▄██▀▀▀▓█████▄▄▄█████▓
+ ▓█████▄ ▓██▒▀█▀ ██▒ ██▒ ▀█▒   ▒██   ▓█   ▀▓  ██▒ ▓▒
+ ▒██▒ ▄██▓██    ▓██░▒██░▄▄▄░   ░██   ▒███  ▒ ▓██░ ▒░
+ ▒██░█▀  ▒██    ▒██ ░▓█  ██▓▓██▄██▓  ▒▓█  ▄░ ▓██▓ ░ 
+ ░▓█  ▀█▓▒██▒   ░██▒░▒▓███▀▒ ▓███▒   ░▒████▒ ▒██▒ ░ 
+ ░▒▓███▀▒░ ▒░   ░  ░ ░▒   ▒  ▒▓▒▒░   ░░ ▒░ ░ ▒ ░░   
+ ▒░▒   ░ ░  ░      ░  ░   ░  ▒ ░▒░    ░ ░  ░   ░    
+  ░    ░ ░      ░   ░ ░   ░  ░ ░ ░      ░    ░      
+  ░             ░         ░  ░   ░      ░  ░ 
+        Chat Commands
+        wallpaper skinid              =   Sets wallpaper to use custom skin id or returns to default if already set.
+        spray skinid                  =   Sets spray can to use custom skin id or returns to default if already set.
+        sprayresize size              =   Resizes spray decal being looked at to give size offset.
+        spraysize size                =   Resizes spays being pained to this size offset.
+        skinitem skinid               =   Just reskin with provided skin id.
+        skinitem skinid "new name"    =   Reskin and change name of item.
+
+        Console Command
+        spray.give userid skinid
+        wallpaper.give userid skinid
+*/
 using Oxide.Core.Plugins;
-using Oxide.Game.Rust;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("SkinAndSpay", "bmgjet", "1.0.1")]
-    [Description("Skin and name held entitys")]
+    [Info("SkinAndSpay", "bmgjet", "1.0.3")]
+    [Description("Skin and name held entities")]
     public class SkinAndSpay : RustPlugin
     {
-        //Chat commands
-        //Spray skinid                  =   Sets spray can to use custom skin id or returns to default if already set.
-        //Sprayresize size              =   Resizes spray decal being looked at to give size offset.
-        //Spraysize size                =   Resizes spays being pained to this size offset.
-        //SkinAndSpay skinid            =   Just reskin with provided skin id.
-        //SkinAndSpay skinid "new name" =   Reskin and change name of item.
-
         //Permission to use command
-        public const string permUse = "SkinAndSpay.use";
-        public const string permSkin = "SkinAndSpay.skin";
-        public const string permSize = "SkinAndSpay.size";
-        public bool HookFallBack = false; //Auto enables based on version unless you want to switch to a worse mode.
-        public List<ulong> Delay = new List<ulong>();
-        public Dictionary<ulong, float> SpraySize = new Dictionary<ulong, float>();
+        private const string permUse = "SkinAndSpay.use";
+        private const string permSkin = "SkinAndSpay.skin";
+        private const string permSize = "SkinAndSpay.size";
+        private Dictionary<ulong, float> SpraySize = new Dictionary<ulong, float>();
 
         [PluginReference]
         Plugin EntityScaleManager;
 
-        public FieldInfo _AssemblyVersion = typeof(RustExtension).GetField("AssemblyVersion",BindingFlags.NonPublic | BindingFlags.Static);
-
+        #region Oxide Hooks
         private void Init()
         {
             //register permission with server
             permission.RegisterPermission(permUse, this);
             permission.RegisterPermission(permSkin, this);
             permission.RegisterPermission(permSize, this);
-            //Fall Back Mode for oxide version missing the hook. Or if byh choice you want to use alternative method.
-            string Version = _AssemblyVersion.GetValue(null).ToString();
-            if (Version == "2.0.5532")
-            {
-                Puts("Setting Hook Fall Back Mode");
-                HookFallBack = true;
-            }
-            else { Puts("Detected Version " + Version); }
-            if (!HookFallBack) { Unsubscribe(nameof(OnPlayerInput)); }
-            else { Unsubscribe(nameof(OnSprayCreate)); }
-        }
-
-        void OnPlayerInput(BasePlayer player, InputState input)
-        {
-            //Falls back for oxide version with out hook.
-            if (HookFallBack)
-            {
-                //Checks Player has permission to reduce server load on heavy hook.
-                if (player.IPlayer.HasPermission(permUse))
-                {
-                    //Checks they have spray can and adds a delay cool down from function firing
-                    if (player.GetHeldEntity() is SprayCan && input.WasJustReleased(BUTTON.FIRE_PRIMARY) && !Delay.Contains(player.userID))
-                    {
-                        Delay.Add(player.userID);
-                        timer.Once(3, () => { Delay.Remove(player.userID); });
-                        timer.Once(1f, () =>
-                        {
-                            //Scans where player is looking to find decal
-                            RaycastHit hit;
-                            if (!Physics.Raycast(player.eyes.HeadRay(), out hit)) { return; }
-                            var entity = hit.GetEntity();
-                            if (entity != null && entity.prefabID == 3884356627)
-                            {
-                                //Found decal so apply skin from held spray can
-                                entity.skinID = player.GetHeldEntity().skinID;
-                                entity.SendNetworkUpdateImmediate();
-                                if (SpraySize.Count != 0) { ShouldRescale(player, entity); }
-                                return;
-                            }
-                        });
-                    }
-                }
-            }
         }
 
         private object OnSprayCreate(SprayCan sc, Vector3 vector, Quaternion quaternion)
@@ -100,7 +64,9 @@ namespace Oxide.Plugins
             }
             return null;
         }
+        #endregion
 
+        #region Methods
         private void ShouldRescale(BasePlayer player, BaseEntity entity)
         {
             //Checks if resize should be applied
@@ -120,7 +86,7 @@ namespace Oxide.Plugins
             }
         }
 
-        Item FindItemOnPlayer(BasePlayer player)
+        private Item FindItemOnPlayer(BasePlayer player)
         {
             //Check player has active item
             var item = player.GetActiveItem();
@@ -145,9 +111,17 @@ namespace Oxide.Plugins
             return item;
         }
 
-        void AdjustItem(BasePlayer player, Item item, ulong skin, string newname)
+        private Item CreateItem(ulong skinID, bool wallpaper = false)
+        {
+            //Give Wallpaper or Spraycan
+            var item = ItemManager.CreateByItemID(wallpaper ? -1501434104 : -596876839, 1, skinID);
+            return item;
+        }
+
+        private void AdjustItem(BasePlayer player, Item item, ulong skin, string newname)
         {
             //Get entity reference
+            Puts(item.info.itemid.ToString());
             var entity = item.GetHeldEntity();
             //Remove item from player
             player.inventory.containerBelt.Remove(item);
@@ -170,6 +144,10 @@ namespace Oxide.Plugins
                 timer.Once(3f, () => { player.inventory.GiveItem(item, player.inventory.containerBelt); });
             });
         }
+
+        #endregion
+
+        #region Chat Commands
 
         [ChatCommand("sprayresize")]
         void sprayresize(BasePlayer player, string command, string[] args)
@@ -252,6 +230,51 @@ namespace Oxide.Plugins
             }
         }
 
+        [ChatCommand("wallpaper")]
+        void wallpaper(BasePlayer player, string command, string[] args)
+        {
+            if (player != null)
+            {
+                //Check permission and reject users without it.
+                if (!player.IPlayer.HasPermission(permUse))
+                {
+                    player.ChatMessage("Permission required");
+                    return;
+                }
+                //Checks if player has wallpaper
+                if (player.GetHeldEntity() is WallpaperPlanner)
+                {
+                    //Removes Modded Wallpaper
+                    if (player.GetHeldEntity().skinID != 0)
+                    {
+                        AdjustItem(player, player.GetHeldEntity().GetItem(), 0, "WALLPAPER");
+                        player.ChatMessage("Remove Custom Wallpaper Skin");
+                    }
+                    else
+                    {
+                        //Sets Modded Wallpaper
+                        if (args != null && args.Length != 0)
+                        {
+                            ulong skin = 0;
+                            if (!ulong.TryParse(args[0], out skin))
+                            {
+                                player.ChatMessage("Error processing skinid example /wallpaper 3315768442");
+                                return;
+                            }
+                            AdjustItem(player, player.GetHeldEntity().GetItem(), skin, "CUSTOM WALLPAPER");
+                            player.ChatMessage("Set Custom Wallpaper Skin");
+                        }
+                    }
+                }
+                else
+                {
+                    //Warn about not having spray Can
+                    player.ChatMessage("Must Be Holding Wallpaper!");
+                    return;
+                }
+            }
+        }
+
         [ChatCommand("spray")]
         void spray(BasePlayer player, string command, string[] args)
         {
@@ -297,7 +320,7 @@ namespace Oxide.Plugins
             }
         }
 
-        [ChatCommand("SkinAndSpay")]
+        [ChatCommand("skinitem")]
         void ItemRenameCommand(BasePlayer player, string command, string[] args)
         {
             //Load default skin 0
@@ -311,7 +334,7 @@ namespace Oxide.Plugins
             //Check enough args are provided
             if (args.Length == 0 || args.Length >= 3)
             {
-                player.ChatMessage(@"/SkinAndSpay skinid or /SkinAndSpay skinid ""item name""");
+                player.ChatMessage(@"/skinitem skinid or /SkinAndSpay skinid ""item name""");
                 return;
             }
             else if (args.Length == 1)
@@ -319,7 +342,7 @@ namespace Oxide.Plugins
                 //try convert first arg to a skinid ulong
                 if (!ulong.TryParse(args[0], out skin))
                 {
-                    player.ChatMessage("Error processing skinid example /SkinAndSpay 633445454");
+                    player.ChatMessage("Error processing skinid example /skinitem 633445454");
                     return;
                 }
                 //Get item from player thats being skinned
@@ -352,5 +375,47 @@ namespace Oxide.Plugins
                 player.ChatMessage("Skin and name changed, may take a few seconds to update");
             }
         }
+        #endregion
+
+        #region Console Commands
+
+        [ConsoleCommand("spray.give")]
+        private void GiveCmd(ConsoleSystem.Arg arg)
+        {
+            if (arg.IsAdmin && arg.Args?.Length > 0)
+            {
+                var player = BasePlayer.Find(arg.Args[0]) ?? BasePlayer.FindSleeping(arg.Args[0]);
+                if (player == null)
+                {
+                    PrintWarning($"Can't find player with that name/ID! {arg.Args[0]}");
+                    return;
+                }
+                ulong SkinID = 0;
+                if (ulong.TryParse(arg.Args[1], out SkinID))
+                {
+                    player.GiveItem(CreateItem(SkinID), BaseEntity.GiveItemReason.Crafted);
+                }
+            }
+        }
+
+        [ConsoleCommand("wallpaper.give")]
+        private void GiveWPCmd(ConsoleSystem.Arg arg)
+        {
+            if (arg.IsAdmin && arg.Args?.Length > 0)
+            {
+                var player = BasePlayer.Find(arg.Args[0]) ?? BasePlayer.FindSleeping(arg.Args[0]);
+                if (player == null)
+                {
+                    PrintWarning($"Can't find player with that name/ID! {arg.Args[0]}");
+                    return;
+                }
+                ulong SkinID = 0;
+                if (ulong.TryParse(arg.Args[1], out SkinID))
+                {
+                    player.GiveItem(CreateItem(SkinID, true), BaseEntity.GiveItemReason.Crafted);
+                }
+            }
+        }
+        #endregion
     }
 }
