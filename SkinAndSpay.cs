@@ -1,12 +1,12 @@
-/*▄▄▄▄    ███▄ ▄███▓  ▄████  ▄▄▄██▀▀▀▓█████▄▄▄█████▓
- ▓█████▄ ▓██▒▀█▀ ██▒ ██▒ ▀█▒   ▒██   ▓█   ▀▓  ██▒ ▓▒
- ▒██▒ ▄██▓██    ▓██░▒██░▄▄▄░   ░██   ▒███  ▒ ▓██░ ▒░
- ▒██░█▀  ▒██    ▒██ ░▓█  ██▓▓██▄██▓  ▒▓█  ▄░ ▓██▓ ░ 
- ░▓█  ▀█▓▒██▒   ░██▒░▒▓███▀▒ ▓███▒   ░▒████▒ ▒██▒ ░ 
- ░▒▓███▀▒░ ▒░   ░  ░ ░▒   ▒  ▒▓▒▒░   ░░ ▒░ ░ ▒ ░░   
- ▒░▒   ░ ░  ░      ░  ░   ░  ▒ ░▒░    ░ ░  ░   ░    
-  ░    ░ ░      ░   ░ ░   ░  ░ ░ ░      ░    ░      
-  ░             ░         ░  ░   ░      ░  ░ 
+/*â–„â–„â–„â–„    â–ˆâ–ˆâ–ˆâ–„ â–„â–ˆâ–ˆâ–ˆâ–“  â–„â–ˆâ–ˆâ–ˆâ–ˆ  â–„â–„â–„â–ˆâ–ˆâ–€â–€â–€â–“â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–„â–„â–„â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–“
+ â–“â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–„ â–“â–ˆâ–ˆâ–’â–€â–ˆâ–€ â–ˆâ–ˆâ–’ â–ˆâ–ˆâ–’ â–€â–ˆâ–’   â–’â–ˆâ–ˆ   â–“â–ˆ   â–€â–“  â–ˆâ–ˆâ–’ â–“â–’
+ â–’â–ˆâ–ˆâ–’ â–„â–ˆâ–ˆâ–“â–ˆâ–ˆ    â–“â–ˆâ–ˆâ–‘â–’â–ˆâ–ˆâ–‘â–„â–„â–„â–‘   â–‘â–ˆâ–ˆ   â–’â–ˆâ–ˆâ–ˆ  â–’ â–“â–ˆâ–ˆâ–‘ â–’â–‘
+ â–’â–ˆâ–ˆâ–‘â–ˆâ–€  â–’â–ˆâ–ˆ    â–’â–ˆâ–ˆ â–‘â–“â–ˆ  â–ˆâ–ˆâ–“â–“â–ˆâ–ˆâ–„â–ˆâ–ˆâ–“  â–’â–“â–ˆ  â–„â–‘ â–“â–ˆâ–ˆâ–“ â–‘ 
+ â–‘â–“â–ˆ  â–€â–ˆâ–“â–’â–ˆâ–ˆâ–’   â–‘â–ˆâ–ˆâ–’â–‘â–’â–“â–ˆâ–ˆâ–ˆâ–€â–’ â–“â–ˆâ–ˆâ–ˆâ–’   â–‘â–’â–ˆâ–ˆâ–ˆâ–ˆâ–’ â–’â–ˆâ–ˆâ–’ â–‘ 
+ â–‘â–’â–“â–ˆâ–ˆâ–ˆâ–€â–’â–‘ â–’â–‘   â–‘  â–‘ â–‘â–’   â–’  â–’â–“â–’â–’â–‘   â–‘â–‘ â–’â–‘ â–‘ â–’ â–‘â–‘   
+ â–’â–‘â–’   â–‘ â–‘  â–‘      â–‘  â–‘   â–‘  â–’ â–‘â–’â–‘    â–‘ â–‘  â–‘   â–‘    
+  â–‘    â–‘ â–‘      â–‘   â–‘ â–‘   â–‘  â–‘ â–‘ â–‘      â–‘    â–‘      
+  â–‘             â–‘         â–‘  â–‘   â–‘      â–‘  â–‘ 
         Chat Commands
         wallpaper skinid              =   Sets wallpaper to use custom skin id or returns to default if already set.
         spray skinid                  =   Sets spray can to use custom skin id or returns to default if already set.
@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace Oxide.Plugins
 {
-    [Info("SkinAndSpay", "bmgjet", "1.0.3")]
+    [Info("SkinAndSpay", "bmgjet", "1.0.4")]
     [Description("Skin and name held entities")]
     public class SkinAndSpay : RustPlugin
     {
@@ -384,14 +384,14 @@ namespace Oxide.Plugins
         {
             if (arg.IsAdmin && arg.Args?.Length > 0)
             {
-                var player = BasePlayer.Find(arg.Args[0]) ?? BasePlayer.FindSleeping(arg.Args[0]);
+                var player = BasePlayer.Find(arg.Args[0].ToString()) ?? BasePlayer.FindSleeping(arg.Args[0].ToString());
                 if (player == null)
                 {
                     PrintWarning($"Can't find player with that name/ID! {arg.Args[0]}");
                     return;
                 }
                 ulong SkinID = 0;
-                if (ulong.TryParse(arg.Args[1], out SkinID))
+                if (ulong.TryParse(arg.Args[1].ToString(), out SkinID))
                 {
                     player.GiveItem(CreateItem(SkinID), BaseEntity.GiveItemReason.Crafted);
                 }
@@ -403,14 +403,14 @@ namespace Oxide.Plugins
         {
             if (arg.IsAdmin && arg.Args?.Length > 0)
             {
-                var player = BasePlayer.Find(arg.Args[0]) ?? BasePlayer.FindSleeping(arg.Args[0]);
+                var player = BasePlayer.Find(arg.Args[0].ToString()) ?? BasePlayer.FindSleeping(arg.Args[0].ToString());
                 if (player == null)
                 {
                     PrintWarning($"Can't find player with that name/ID! {arg.Args[0]}");
                     return;
                 }
                 ulong SkinID = 0;
-                if (ulong.TryParse(arg.Args[1], out SkinID))
+                if (ulong.TryParse(arg.Args[1].ToString(), out SkinID))
                 {
                     player.GiveItem(CreateItem(SkinID, true), BaseEntity.GiveItemReason.Crafted);
                 }
